@@ -1,58 +1,41 @@
-import os
-import torch
-from transformers import AutoProcessor, AutoTokenizer, Gemma3nForConditionalGeneration
-from dotenv import load_dotenv
+
+"""
+Loads the Gemma 3n model for MLX from a local directory.
+"""
+from pathlib import Path
+from mlx_lm import load
 
 def load_model():
     """
-    Loads the Gemma 3n model, processor, and tokenizer.
-
-    This function loads the specified Gemma 3n model and its associated
-    processor and tokenizer from Hugging Face. It automatically detects
-    if a CUDA-enabled GPU is available and loads the model onto it,
-    otherwise it uses the CPU. It retrieves the Hugging Face Hub token
-    from a .env file.
+    Loads the MLX-quantized Gemma 3n model and tokenizer from a local directory.
 
     Returns:
         tuple: A tuple containing:
-            - model (Gemma3nForConditionalGeneration): The loaded model.
-            - processor (AutoProcessor): The loaded processor.
-            - tokenizer (AutoTokenizer): The loaded tokenizer.
+            - model: The loaded MLX model.
+            - tokenizer: The loaded tokenizer.
     """
-    load_dotenv()
+    model_id = "mlx-community/gemma-3n-E2B-it-lm-4bit"
+    # Point to the local directory where the model was downloaded
+    model_path = Path(__file__).parent.parent.parent / "models" / model_id
+
+    if not model_path.exists():
+        raise FileNotFoundError(
+            f"Model directory not found at {model_path}. "
+            f"Please run the 'scripts/download_model.py' script first."
+        )
+
+    print(f"Loading MLX model from local path: {model_path}...")
     
-    hf_token = os.getenv("HUGGING_FACE_HUB_TOKEN")
-    if not hf_token:
-        raise ValueError("Hugging Face token not found. Please set HUGGING_FACE_HUB_TOKEN in your .env file.")
-
-    # 1. Set device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
-
-    # 2. Define model ID and data type
-    model_id = "google/gemma-3n-E2B-it"
-    dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
-
-    # 3. Load tokenizer, processor, and model
-    print("Loading model components...")
-    tokenizer = AutoTokenizer.from_pretrained(model_id, token=hf_token)
-    processor = AutoProcessor.from_pretrained(model_id, token=hf_token)
-    model = Gemma3nForConditionalGeneration.from_pretrained(
-        model_id,
-        token=hf_token,
-        torch_dtype=dtype,
-        low_cpu_mem_usage=True,
-    ).to(device)
-    print("Model components loaded successfully.")
-
-    return model, processor, tokenizer
+    model, tokenizer = load(str(model_path))
+    
+    print("MLX model and tokenizer loaded successfully.")
+    return model, tokenizer
 
 if __name__ == '__main__':
-    # Example of how to use the function
     try:
-        model, processor, tokenizer = load_model()
-        print("\nModel, processor, and tokenizer loaded successfully for testing.")
-        print(f"Model class: {model.__class__.__name__}")
-        print(f"Tokenizer class: {tokenizer.__class__.__name__}")
+        model, tokenizer = load_model()
+        print("\nModel and tokenizer loaded successfully for testing.")
+        print(f"Model type: {type(model)}")
+        print(f"Tokenizer type: {type(tokenizer)}")
     except Exception as e:
         print(f"An error occurred: {e}")

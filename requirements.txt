@@ -19,3 +19,5 @@ timm
 torchvision
 Pillow
 numpy
+mlx
+mlx-lm
