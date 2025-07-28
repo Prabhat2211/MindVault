@@ -1,5 +1,3 @@
-transformers
-torch
 gradio
 opencv-python
 sounddevice
@@ -9,15 +7,10 @@ pandas
 datasets
 scikit-learn
 sentence-transformers
-peft
-trl
-accelerate
-bitsandbytes
 huggingface_hub
 python-dotenv
-timm
-torchvision
 Pillow
 numpy
 mlx
 mlx-lm
+mlx-vlm

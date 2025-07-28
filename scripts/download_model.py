@@ -18,7 +18,7 @@ def download_model():
         print("Hugging Face token not found in .env file, proceeding without it.")
         print("If the model is private, this will fail.")
 
-    model_id = "mlx-community/gemma-3n-E2B-it-lm-4bit"
+    model_id = "mlx-community/gemma-3n-E2B-it-4bit"
     # Create a path within the project's models directory
     local_dir = Path(__file__).parent.parent / "models" / model_id
 

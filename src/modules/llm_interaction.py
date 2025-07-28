@@ -3,7 +3,7 @@
 Handles LLM interaction for the Mind Vault Companion using MLX.
 """
 import time
-from mlx_lm import generate
+from mlx_vlm import generate
 
 def get_gemma_response(model, tokenizer, messages, max_new_tokens=256):
     """
@@ -38,7 +38,8 @@ def get_gemma_response(model, tokenizer, messages, max_new_tokens=256):
     duration = end_time - start_time
     print(f"(Inference time: {duration:.2f} seconds)")
 
-    return response
+    # The generate function returns a GenerationResult object, so we extract the text.
+    return response.text
 
 if __name__ == '__main__':
     # This is a placeholder for a test.
@@ -56,8 +57,13 @@ if __name__ == '__main__':
                 full_prompt += f"{msg['role']}: {msg['content'][0]['text']}\n"
             return full_prompt
 
+    # Mimic the GenerationResult object returned by mlx_vlm.generate
+    class DummyGenerationResult:
+        def __init__(self, text):
+            self.text = text
+
     def dummy_generate(model, tokenizer, prompt, max_tokens, verbose):
-        return "This is a dummy response from the MLX model."
+        return DummyGenerationResult("This is a dummy response from the MLX model.")
 
     # Replace the actual generate function with the dummy one for the test
     import sys
@@ -86,8 +92,10 @@ if __name__ == '__main__':
     )
 
     print(f"\nGenerated Response: {response}")
+    assert isinstance(response, str)
+    assert response == "This is a dummy response from the MLX model."
+
 
     # Restore the original function
     sys.modules[__name__].generate = original_generate
     print("\nTest complete.")
-

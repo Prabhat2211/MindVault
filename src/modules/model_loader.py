@@ -3,7 +3,7 @@
 Loads the Gemma 3n model for MLX from a local directory.
 """
 from pathlib import Path
-from mlx_lm import load
+from mlx_vlm import load
 
 def load_model():
     """
@@ -14,7 +14,7 @@ def load_model():
             - model: The loaded MLX model.
             - tokenizer: The loaded tokenizer.
     """
-    model_id = "mlx-community/gemma-3n-E2B-it-lm-4bit"
+    model_id = "mlx-community/gemma-3n-E2B-it-4bit"
     # Point to the local directory where the model was downloaded
     model_path = Path(__file__).parent.parent.parent / "models" / model_id
 
