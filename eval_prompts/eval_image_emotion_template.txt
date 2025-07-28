@@ -1,0 +1,1 @@
+Analyze the facial expression in this image. Which single emotion (Happy, Sad, Angry, Neutral, Surprise, Fear, Disgust) is most prominent? Respond only with the emotion word.
